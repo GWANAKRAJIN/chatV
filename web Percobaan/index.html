@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Violet Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-color: #7e57c2;
+            --secondary-color: #5e35b1;
+            --accent-color: #9575cd;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --text-color: #e6e6e6;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, var(--dark-color) 0%, #16213e 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Login & Register Styles */
+        .login-container {
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-color);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: var(--accent-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            padding: 15px;
+            background: rgba(126, 87, 194, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px dashed var(--accent-color);
+        }
+
+        .file-label:hover {
+            background: rgba(126, 87, 194, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.4);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chat Page Styles */
+        .chat-container {
+            display: flex;
+            height: 90vh;
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-color);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(26, 26, 46, 0.9);
+            border-right: 1px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: rgba(94, 53, 177, 0.2);
+            border-bottom: 1px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .user-details h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 12px;
+            color: var(--accent-color);
+        }
+
+        .search-container {
+            padding: 15px;
+            border-bottom: 1px solid rgba(149, 117, 205, 0.3);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .conversations {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .conversation {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .conversation:hover {
+            background: rgba(149, 117, 205, 0.1);
+        }
+
+        .conversation.active {
+            background: rgba(149, 117, 205, 0.2);
+        }
+
+        .conversation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .conversation-info {
+            flex: 1;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .conversation-preview {
+            font-size: 12px;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-time {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .current-chat-header {
+            padding: 15px 20px;
+            background: rgba(94, 53, 177, 0.2);
+            border-bottom: 1px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: rgba(94, 53, 177, 0.3);
+            border-top-left-radius: 5px;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-top-right-radius: 5px;
+        }
+
+        .message-content {
+            word-break: break-word;
+        }
+
+        .message-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .message-input-container {
+            padding: 15px;
+            border-top: 1px solid rgba(149, 117, 205, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            position: relative;
+            margin-right: 15px;
+        }
+
+        #message-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 14px;
+            resize: none;
+            max-height: 120px;
+        }
+
+        #message-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .image-input-container {
+            position: relative;
+            margin-right: 15px;
+        }
+
+        #image-input {
+            display: none;
+        }
+
+        .image-input-label {
+            cursor: pointer;
+            color: var(--accent-color);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .image-input-label:hover {
+            background: rgba(149, 117, 205, 0.1);
+        }
+
+        #image-preview {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 150px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-color);
+            display: none;
+        }
+
+        #remove-image {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #send-button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #send-button:hover {
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--error-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .chat-container {
+                flex-direction: column;
+                height: 95vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 40%;
+                border-right: none;
+                border-bottom: 1px solid var(--accent-color);
+            }
+            
+            .chat-main {
+                height: 60%;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+
+<script>
+  // Data pengguna (disimpan di localStorage)
+  let users = JSON.parse(localStorage.getItem('violetChatUsers')) || [];
+  let currentUser = JSON.parse(localStorage.getItem('violetChatCurrentUser')) || null;
+  let messages = JSON.parse(localStorage.getItem('violetChatMessages')) || [];
+
+  // Elemen DOM
+  const loginPage = document.getElementById('login-page');
+  const registerPage = document.getElementById('register-page');
+  const chatPage = document.getElementById('chat-page');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const showRegisterLink = document.getElementById('show-register');
+  const showLoginLink = document.getElementById('show-login');
+  const chatMessages = document.getElementById('chat-messages');
+  const messageInput = document.getElementById('message-input');
+  const imageInput = document.getElementById('image-input');
+  const imagePreview = document.getElementById('image-preview');
+  const removeImageBtn = document.getElementById('remove-image');
+  const sendButton = document.getElementById('send-button');
+  const currentUsername = document.getElementById('current-username');
+  const notification = document.getElementById('notification');
+
+  // Event Listeners
+  document.addEventListener('DOMContentLoaded', initApp);
+  loginForm.addEventListener('submit', handleLogin);
+  registerForm.addEventListener('submit', handleRegister);
+  showRegisterLink.addEventListener('click', showRegisterPage);
+  showLoginLink.addEventListener('click', showLoginPage);
+  sendButton.addEventListener('click', handleMessageSubmit);
+  imageInput.addEventListener('change', handleImageSelect);
+  removeImageBtn.addEventListener('click', removeImagePreview);
+  messageInput.addEventListener('keydown', handleTextareaResize);
+  messageInput.addEventListener('input', handleTextareaResize);
+  messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleMessageSubmit();
+      }
+  });
+
+  // Fungsi inisialisasi aplikasi
+  function initApp() {
+      // Cek jika pengguna sudah login
+      if (currentUser) {
+          showChatPage();
+          loadMessages();
+          updateOnlineUsers();
+      } else {
+          showLoginPage();
+      }
+      
+      // Simulasi pengguna online
+      setInterval(updateOnlineUsers, 10000);
+  }
+
+  // Fungsi untuk menangani login
+  function handleLogin(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Validasi input
+      if (!username || !password) {
+          showNotification('Username dan password harus diisi', 'error');
+          return;
+      }
+      
+      // Cari pengguna
+      const user = users.find(u => u.username === username && u.password === password);
+      
+      if (user) {
+          // Login berhasil
+          currentUser = user;
+          localStorage.setItem('violetChatCurrentUser', JSON.stringify(currentUser));
+          showChatPage();
+          loadMessages();
+          updateOnlineUsers();
+          showNotification('Login berhasil!', 'success');
+      } else {
+          // Login gagal
+          showNotification('Username atau password salah', 'error');
+      }
+  }
+
+  // Fungsi untuk menangani registrasi
+  function handleRegister(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const avatarFile = document.getElementById('reg-avatar').files[0];
+      
+      // Validasi input
+      if (!username || !password) {
+          showNotification('Username dan password harus diisi', 'error');
+          return;
+      }
+      
+      // Cek jika username sudah ada
+      if (users.some(u => u.username === username)) {
+          showNotification('Username sudah digunakan', 'error');
+          return;
+      }
+      
+      // Buat avatar URL
+      let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=7e57c2&color=fff`;
+      
+      if (avatarFile) {
+          // Jika pengguna mengupload avatar, gunakan itu
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              avatarUrl = e.target.result;
+              completeRegistration(username, password, avatarUrl);
+          };
+          reader.readAsDataURL(avatarFile);
+      } else {
+          completeRegistration(username, password, avatarUrl);
+      }
+  }
+  
+  function completeRegistration(username, password, avatarUrl) {
+      // Buat user baru
+      const newUser = {
+          id: Date.now().toString(),
+          username,
+          password,
+          avatarUrl,
+          isOnline: true,
+          lastSeen: new Date()
+      };
+      
+      // Tambahkan ke daftar pengguna
+      users.push(newUser);
+      localStorage.setItem('violetChatUsers', JSON.stringify(users));
+      
+      // Login otomatis setelah registrasi
+      currentUser = newUser;
+      localStorage.setItem('violetChatCurrentUser', JSON.stringify(currentUser));
+      
+      showChatPage();
+      loadMessages();
+      updateOnlineUsers();
+      showNotification('Registrasi berhasil!', 'success');
+  }
+
+  // Fungsi untuk menangani pengiriman pesan
+  function handleMessageSubmit() {
+      const messageText = messageInput.value.trim();
+      const imageFile = imageInput.files[0];
+      
+      if (!messageText && !imageFile) {
+          return;
+      }
+      
+      // Buat pesan baru
+      const newMessage = {
+          id: Date.now().toString(),
+          senderId: currentUser.id,
+          text: messageText,
+          timestamp: new Date(),
+          isImage: false
+      };
+      
+      // Jika ada gambar, proses gambar
+      if (imageFile) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              newMessage.imageUrl = e.target.result;
+              newMessage.isImage = true;
+              addMessageToChat(newMessage);
+              removeImagePreview();
+          };
+          reader.readAsDataURL(imageFile);
+      } else {
+          addMessageToChat(newMessage);
+      }
+      
+      // Reset input
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+  }
+  
+  function addMessageToChat(message) {
+      // Tambahkan ke daftar pesan
+      messages.push(message);
+      localStorage.setItem('violetChatMessages', JSON.stringify(messages));
+      
+      // Tampilkan pesan di chat
+      displayMessage(message);
+      
+      // Scroll ke bawah
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Simulasi balasan otomatis (hanya untuk demo)
+      if (Math.random() > 0.5) {
+          setTimeout(() => {
+              const autoReplies = [
+                  "Pesan yang bagus!",
+                  "Terima kasih sudah mengirim pesan!",
+                  "Saya sedang memproses pesan Anda...",
+                  "Ini adalah aplikasi chat dengan tema violet yang estetik!",
+                  "Coba kirim gambar juga, fiturnya sudah berfungsi!"
+              ];
+              
+              const randomReply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+              
+              const replyMessage = {
+                  id: Date.now().toString(),
+                  senderId: 'system',
+                  text: randomReply,
+                  timestamp: new Date(),
+                  isImage: false
+              };
+              
+              messages.push(replyMessage);
+              localStorage.setItem('violetChatMessages', JSON.stringify(messages));
+              displayMessage(replyMessage);
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 1000 + Math.random() * 2000);
+      }
+  }
+
+  // Fungsi untuk menangani pemilihan gambar
+  function handleImageSelect() {
+      const file = imageInput.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              imagePreview.src = e.target.result;
+              imagePreview.style.display = 'block';
+              removeImageBtn.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+      }
+  }
+
+  // Fungsi untuk menghapus preview gambar
+  function removeImagePreview() {
+      imageInput.value = '';
+      imagePreview.style.display = 'none';
+      removeImageBtn.style.display = 'none';
+  }
+
+  // Fungsi untuk menampilkan pesan di chat
+  function displayMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+      
+      // Tentukan apakah pesan dikirim oleh pengguna saat ini
+      if (message.senderId === currentUser.id) {
+          messageElement.classList.add('sent');
+      } else {
+          messageElement.classList.add('received');
+      }
+      
+      let messageContent = '';
+      if (message.text) {
+          messageContent += `<div class="message-content">${message.text}</div>`;
+      }
+      
+      if (message.isImage && message.imageUrl) {
+          messageContent += `<img src="${message.imageUrl}" class="message-image" alt="Gambar chat">`;
+      }
+      
+      // Format waktu
+      const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageContent += `<div class="message-time">${time}</div>`;
+      
+      messageElement.innerHTML = messageContent;
+      chatMessages.appendChild(messageElement);
+  }
+
+  // Fungsi untuk memuat pesan
+  function loadMessages() {
+      // Kosongkan chat
+      chatMessages.innerHTML = '';
+      
+      // Tampilkan pesan default jika tidak ada pesan
+      if (messages.length === 0) {
+          const welcomeMessage = {
+              id: 'welcome',
+              senderId: 'system',
+              text: 'Halo! Selamat datang di Violet Chat. Aplikasi chat dengan tema violet yang estetik.',
+              timestamp: new Date(),
+              isImage: false
+          };
+          displayMessage(welcomeMessage);
+          return;
+      }
+      
+      // Tampilkan semua pesan
+      messages.forEach(message => {
+          displayMessage(message);
+      });
+      
+      // Scroll ke bawah
+      setTimeout(() => {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 100);
+  }
+
+  // Fungsi untuk mengatur textarea yang dapat di-resize
+  function handleTextareaResize(e) {
+      messageInput.style.height = 'auto';
+      messageInput.style.height = (messageInput.scrollHeight) + 'px';
+      
+      // Batasi tinggi maksimum
+      if (messageInput.scrollHeight > 120) {
+          messageInput.style.overflowY = 'auto';
+      } else {
+          messageInput.style.overflowY = 'hidden';
+      }
+  }
+
+  // Fungsi untuk memperbarui status pengguna online
+  function updateOnlineUsers() {
+      if (currentUser) {
+          currentUsername.textContent = currentUser.username;
+          
+          // Dalam aplikasi nyata, ini akan mengambil data dari server
+          const onlineCount = 1 + Math.floor(Math.random() * 10);
+          document.getElementById('online-status').textContent = `${onlineCount} online`;
+      }
+  }
+
+  // Fungsi untuk menampilkan notifikasi
+  function showNotification(text, type) {
+      notification.textContent = text;
+      notification.className = 'notification show ' + type;
+      
+      setTimeout(() => {
+          notification.className = 'notification ' + type;
+      }, 3000);
+  }
+
+  // Fungsi untuk beralih antar halaman
+  function showLoginPage() {
+      loginPage.classList.add('active');
+      registerPage.classList.remove('active');
+      chatPage.classList.remove('active');
+  }
+
+  function showRegisterPage() {
+      loginPage.classList.remove('active');
+      registerPage.classList.add('active');
+      chatPage.classList.remove('active');
+  }
+
+  function showChatPage() {
+      loginPage.classList.remove('active');
+      registerPage.classList.remove('active');
+      chatPage.classList.add('active');
+  }
+</script>
+</head>
+<body>
+    <!-- Halaman Login -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="fas fa-comments"></i> Violet Chat</h1>
+                <p>Login untuk mulai mengobrol</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-btn">Masuk</button>
+            </form>
+            <p class="register-link">Belum punya akun? <a href="#" id="show-register">Daftar di sini</a></p>
+        </div>
+    </div>
+
+    <!-- Halaman Register -->
+    <div id="register-page" class="page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="fas fa-user-plus"></i> Daftar Akun</h1>
+                <p>Buat akun baru untuk mulai mengobrol</p>
+            </div>
+            <form id="register-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="reg-username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reg-password" placeholder="Password" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-image"></i>
+                    <input type="file" id="reg-avatar" accept="image/*" class="file-input">
+                    <label for="reg-avatar" class="file-label">Pilih Foto Profil</label>
+                </div>
+                <button type="submit" class="login-btn">Daftar</button>
+            </form>
+            <p class="register-link">Sudah punya akun? <a href="#" id="show-login">Login di sini</a></p>
+        </div>
+    </div>
+
+    <!-- Halaman Chat -->
+    <div id="chat-page" class="page">
+        <div class="chat-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="chat-header">
+                    <img src="https://ui-avatars.com/api/?name=User&background=7e57c2&color=fff" alt="Avatar" class="user-avatar">
+                    <div class="user-details">
+                        <h2 id="current-username">User</h2>
+                        <p id="online-status">Online</p>
+                    </div>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Cari atau mulai chat baru...">
+                </div>
+                
+                <div class="conversations">
+                    <!-- Daftar percakapan akan dimuat di sini -->
+                </div>
+            </div>
+            
+            <!-- Area Chat Utama -->
+            <div class="chat-main">
+                <div class="current-chat-header">
+                    <img src="https://ui-avatars.com/api/?name=Violet+Chat&background=7e57c2&color=fff" alt="Avatar" class="user-avatar">
+                    <div class="user-details">
+                        <h2>Violet Chat</h2>
+                        <p>Online</p>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="chat-messages">
+                    <!-- Pesan akan dimuat di sini -->
+                    <div class="message received">
+                        <div class="message-content">Halo! Selamat datang di Violet Chat. Aplikasi chat dengan tema violet yang estetik.</div>
+                        <div class="message-time">10:00</div>
+                    </div>
+                </div>
+                
+                <div class="message-input-container">
+                    <div class="message-input-wrapper">
+                        <textarea id="message-input" placeholder="Ketik pesan..." rows="1"></textarea>
+                    </div>
+                    
+                    <div class="image-input-container">
+                        <input type="file" id="image-input" accept="image/*">
+                        <label for="image-input" class="image-input-label">
+                            <i class="fas fa-image"></i>
+                        </label>
+                        <img id="image-preview" src="" alt="Preview">
+                        <button id="remove-image"><i class="fas fa-times"></i></button>
+                    </div>
+                    
+                    <button id="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifikasi -->
+    <div class="notification" id="notification"></div>
+
+</body>
+</html>
